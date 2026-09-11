@@ -208,26 +208,13 @@ def consultar_deuda():
     if not data_req or 'numero' not in data_req:
         return jsonify({"status": "error", "message": "Falta el número a consultar"}), 400
 
-    # ================= ARQUITECTURA MAESTRO / ESCLAVO ================= 
-    # Determina si esta línea de código se está ejecutando bajo la web pública RENDER.
-    if os.environ.get("RENDER") or os.environ.get("VERCEL"):
-        print("[DEBUG] -> Render.com enviando petición puente al Servidor VPS Oculto...", file=sys.stderr, flush=True)
-        try:
-            proxy_res = requests.post(f"http://{VPS_IP}:10000/consulta", json=data_req, timeout=120)
-            proxy_data = proxy_res.json()
-            if proxy_data.get("status") == "success" and "amount" in proxy_data:
-                proxy_data["amount"] = float(proxy_data["amount"]) * 0.60
-            return jsonify(proxy_data), proxy_res.status_code
-        except Exception as e:
-            print(f"[DEBUG] -> Error Fatal contactando a tu servidor Windows: {str(e)}", file=sys.stderr, flush=True)
-            return jsonify({"status": "error", "message": "Backend apagado o tu VPS Firewall bloqueó a Render"}), 502
-    # ====================================================================
+    
 
     numero = str(data_req['numero']).strip()
     print(f"[DEBUG] -> Redirigiendo consulta a nuestra API local de Playwright: {numero}", file=sys.stderr, flush=True)
     
     try:
-        api_url = f"http://127.0.0.1:8000/consultar?numero={numero}"
+        api_url = f"http://{VPS_IP}:8000/consultar?numero={numero}"
         import requests
         res = requests.get(api_url, timeout=60)
         data = res.json()
