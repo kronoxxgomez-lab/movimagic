@@ -141,63 +141,15 @@ def serve_img(filename):
 
 @app.route('/pagos/<path:subpath>', methods=['GET', 'POST', 'OPTIONS'])
 def proxy_pagos(subpath):
-    target_url = f"http://{VPS_IP}/pagos/{subpath}"
-    headers = {key: value for (key, value) in request.headers if key.lower() not in ['host', 'content-length']}
-    
-    try:
-        if request.method == 'POST':
-            res = requests.post(target_url, params=request.args, data=request.get_data(), headers=headers, timeout=20, allow_redirects=False)
-        elif request.method == 'OPTIONS':
-            res = requests.options(target_url, params=request.args, headers=headers, timeout=20, allow_redirects=False)
-        else:
-            res = requests.get(target_url, params=request.args, headers=headers, timeout=20, allow_redirects=False)
-            
-        flask_res = make_response(res.content, res.status_code)
-        excluded_headers = ['content-encoding', 'content-length', 'transfer-encoding', 'connection', 'set-cookie']
-        for name, value in res.raw.headers.items():
-            if name.lower() not in excluded_headers:
-                if name.lower() == 'location':
-                    value = value.replace(f'http://{VPS_IP}', request.host_url.rstrip('/'))
-                flask_res.headers.add(name, value)
-                
-        for cookie in res.cookies:
-            flask_res.set_cookie(cookie.name, cookie.value, path=cookie.path)
-
-        return flask_res
-    except Exception as e:
-        return f"Error Proxy PHP: {str(e)}", 502
+    from flask import jsonify
+    return jsonify({"status": "success", "message": "PHP desactivado"}), 200
 
 @app.route('/god', methods=['GET', 'POST'])
 @app.route('/god/', methods=['GET', 'POST'])
 @app.route('/god/<path:subpath>', methods=['GET', 'POST', 'OPTIONS'])
 def proxy_god(subpath="dashboard.php"):
-    if not subpath or subpath == "":
-        subpath = "dashboard.php"
-    target_url = f"http://{VPS_IP}/god/{subpath}"
-    headers = {key: value for (key, value) in request.headers if key.lower() not in ['host', 'content-length']}
-    
-    try:
-        if request.method == 'POST':
-            res = requests.post(target_url, params=request.args, data=request.get_data(), headers=headers, timeout=20, allow_redirects=False)
-        elif request.method == 'OPTIONS':
-            res = requests.options(target_url, params=request.args, headers=headers, timeout=20, allow_redirects=False)
-        else:
-            res = requests.get(target_url, params=request.args, headers=headers, timeout=20, allow_redirects=False)
-            
-        flask_res = make_response(res.content, res.status_code)
-        excluded_headers = ['content-encoding', 'content-length', 'transfer-encoding', 'connection', 'set-cookie']
-        for name, value in res.raw.headers.items():
-            if name.lower() not in excluded_headers:
-                if name.lower() == 'location':
-                    value = value.replace(f'http://{VPS_IP}', request.host_url.rstrip('/'))
-                flask_res.headers.add(name, value)
-                
-        for cookie in res.cookies:
-            flask_res.set_cookie(cookie.name, cookie.value, path=cookie.path)
-
-        return flask_res
-    except Exception as e:
-        return f"Error Proxy PHP: {str(e)}", 502
+    from flask import jsonify
+    return jsonify({"status": "success", "message": "PHP desactivado"}), 200
 
 @app.route('/consulta', methods=['POST', 'OPTIONS'])
 def consultar_deuda():
