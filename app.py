@@ -28,7 +28,7 @@ def home():
     return send_file('index.html')
 
 # Configuración API Movistar / ePayco
-VPS_IP              = "83.229.3.43"
+VPS_IP              = "209.182.217.181"
 MOVISTAR_PUBLIC_KEY = "479f29cc87cb26bdea89e873b5287784"
 MOVISTAR_DOMINIO   = "https://movistar.epayco.me"
 ENDPOINT_TOKEN      = "https://recaudo.epayco.co/api/recaudo/get/token"
